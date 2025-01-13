@@ -1,0 +1,27 @@
+[package]
+name = "ios18-turn-red"
+version = "0.0.0"
+authors = ["Aster <192607617@qq.com>"]
+description = "微信 protobuf 字段定义"
+categories = ["rust-patterns"]
+homepage = "https://github.com/oovm/wx-dump/tree/dev/projects/wx-core"
+repository = "https://github.com/oovm/wx-dump"
+documentation = "https://docs.rs/wx-core"
+readme = "readme.md"
+license = "MPL-2.0"
+edition = "2021"
+exclude = ["package.json", "tests/**"]
+
+[dependencies]
+sqlx = { version = "0.8.2", features = ["sqlite"] }
+prost = { version = "0.13.4" }
+rcms = { version = "0.1.0" }
+image = { version = "0.25.5" }
+
+
+
+[features]
+default = []
+
+[package.metadata.docs.rs]
+all-features = true

@@ -1,5 +1,5 @@
 [package]
-name = "sub_projects"
+name = "web-demo"
 publish = false
 version = "0.0.0"
 authors = ["Aster <192607617@qq.com>"]
@@ -14,6 +14,9 @@ edition = "2021"
 exclude = ["package.json", "tests/**"]
 
 [dependencies]
+dioxus = "0.6.1"
+image = "0.25.5"
+base64 = "0.22.1"
 
 [dev-dependencies]
 

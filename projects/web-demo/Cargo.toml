@@ -14,7 +14,9 @@ edition = "2021"
 exclude = ["package.json", "tests/**"]
 
 [dependencies]
-dioxus = "0.6.1"
+anyhow = "1.0.95"
+dioxus = { version = "0.6.2", features = ["web", "logger"] }
+tracing = { version = "0.1.41", features = ["log"] }
 image = "0.25.5"
 base64 = "0.22.1"
 

@@ -1,61 +1,41 @@
-use dioxus::prelude::*;
-use image::ImageFormat;
-use std::io::Cursor;
+use dioxus::{dioxus_core::SpawnIfAsync, html::FileEngine, prelude::*, web::WebFileEngineExt};
+use image::{ImageError, ImageFormat, RgbImage, RgbaImage};
+use std::{future::Future, io::Cursor, sync::Arc};
+use tracing::info;
 
 fn main() {
-    dioxus_web::launch(app);
+    launch(App);
 }
 
-fn app(cx: Scope) -> Element {
-    let mut images: Vec<String> = Vec::new();
+#[component]
+fn App() -> Element {
+    let mut count = use_signal(|| 0);
 
-    let select_file = move |_| {
-        let file_input = cx.use_ref(|_| None);
-        let file_input = file_input.current().clone();
-        let images = images.clone();
-
-        move |event| {
-            let files = event
-                .target()
-                .unwrap()
-                .dyn_ref::<web_sys::HtmlInputElement>()
-                .unwrap()
-                .files()
-                .unwrap();
-
-            if let Some(file) = files.get(0) {
-                let reader = web_sys::FileReader::new().unwrap();
-                let images = images.clone();
-
-                let callback = move |_| {
-                    let data_url = reader.result().unwrap().as_string().unwrap();
-                    images.push(data_url);
-                    file_input.set(None);
-                    cx.rerender();
-                };
-
-                reader.set_onload(Some(callback.as_ref().unchecked_ref()));
-                reader.read_as_data_url(&file).unwrap();
-            }
+    rsx! {
+        input {
+            r#type: "file",
+             oninput: |e| async move {
+                let buff = read_image_buffer(e).await
+             }
         }
-    };
+        // input {
+        //     r#type: "text",
+        //     oninput: move |evt| {
+        //         info!("text input {:?}", evt);
+        //     }
+        // }
+    }
+}
 
-    rsx!(cx, div {
-        class: "container",
-        input(
-            type: "file",
-            onchange: select_file,
-            accept: "image/*",
-        )
-        div {
-            class: "images",
-            images.iter().map(|image| {
-                rsx!(cx, img {
-                    class: "image",
-                    src: "{image}",
-                    alt: "Uploaded Image"
-                })
-            })
-        }
-    })
+async fn read_image(event: Event<FormData>) -> Result<RgbImage, ImageError> {
+    let bytes = read_image_buffer(event).await.unwrap_or_default();
+    let image = image::load_from_memory(&bytes)?;
+    Ok(image.into_rgb8())
+}
+
+
+async fn read_image_buffer(event: Event<FormData>) -> Option<Vec<u8>> {
+    let files = event.data.files()?;
+    let name = files.files().first()?;
+    files.read_file(name).await
 }

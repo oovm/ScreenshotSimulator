@@ -287,7 +287,7 @@ impl IccProfile {
         self.id = id;
         self.created = {
             let year = creation_year as i32;
-            let month = creation_month
+            let month = (creation_month as u8)
                 .try_into()
                 .map_err(|_| DeserError::InvalidCreationDate)?;
             let day = creation_day
@@ -304,9 +304,9 @@ impl IccProfile {
                 .map_err(|_| DeserError::InvalidCreationDate)?;
 
             time::PrimitiveDateTime::new(
-                time::Date::try_from_ymd(year, month, day)
+                time::Date::from_calendar_date(year, month, day)
                     .map_err(|_| DeserError::InvalidCreationDate)?,
-                time::Time::try_from_hms(hours, minutes, seconds)
+                time::Time::from_hms(hours, minutes, seconds)
                     .map_err(|_| DeserError::InvalidCreationDate)?,
             )
             .assume_offset(time::UtcOffset::UTC)

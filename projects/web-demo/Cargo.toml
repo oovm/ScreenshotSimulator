@@ -15,7 +15,7 @@ exclude = ["package.json", "tests/**"]
 
 [dependencies]
 anyhow = "1.0.95"
-cint = { version = "0.3.1"}
+rcms = { workspace = true }
 dioxus = { version = "0.6.2", features = ["web"] }
 tracing = { version = "0.1.41", features = ["log"] }
 image = "0.25.5"

@@ -15,8 +15,8 @@ watch_path = ["src", "assets"]
 style = [
     "./assets/main.scss",
     "https://unpkg.com/tailwindcss@2.2/dist/tailwind.min.css",
-    "https://unpkg.com/daisyui@1.24.3/dist/full.css",
-    "https://unpkg.com/katex@0.16.0/dist/katex.min.css"
+    "https://unpkg.com/daisyui@4.12.23/dist/full.css",
+#    "https://unpkg.com/katex@0.16.0/dist/katex.min.css"
 ]
 
 [web.resource.dev]

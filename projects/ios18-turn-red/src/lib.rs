@@ -64,18 +64,3 @@ pub fn turn_red() {
         println!("|{}|{:.4}|{:.4}|{:.4}|{}|", i, p3_out[0], p3_out[1], p3_out[2], hash);
     }
 }
-
-#[test]
-fn test_file() {
-    let pipe = IOS18ScreenShot::new().unwrap();
-    pipe.convert_file(r#"C:\Users\Aster\Desktop\10.png"#, r#"C:\Users\Aster\Desktop\11.png"#).unwrap();
-    pipe.convert_file(r#"C:\Users\Aster\Desktop\11.png"#, r#"C:\Users\Aster\Desktop\12.png"#).unwrap();
-    pipe.convert_file(r#"C:\Users\Aster\Desktop\12.png"#, r#"C:\Users\Aster\Desktop\13.png"#).unwrap();
-    pipe.convert_file(r#"C:\Users\Aster\Desktop\13.png"#, r#"C:\Users\Aster\Desktop\14.png"#).unwrap();
-    pipe.convert_file(r#"C:\Users\Aster\Desktop\14.png"#, r#"C:\Users\Aster\Desktop\15.png"#).unwrap();
-    pipe.convert_file(r#"C:\Users\Aster\Desktop\15.png"#, r#"C:\Users\Aster\Desktop\16.png"#).unwrap();
-    pipe.convert_file(r#"C:\Users\Aster\Desktop\16.png"#, r#"C:\Users\Aster\Desktop\17.png"#).unwrap();
-    pipe.convert_file(r#"C:\Users\Aster\Desktop\17.png"#, r#"C:\Users\Aster\Desktop\18.png"#).unwrap();
-    pipe.convert_file(r#"C:\Users\Aster\Desktop\18.png"#, r#"C:\Users\Aster\Desktop\19.png"#).unwrap();
-    pipe.convert_file(r#"C:\Users\Aster\Desktop\19.png"#, r#"C:\Users\Aster\Desktop\20.png"#).unwrap();
-}

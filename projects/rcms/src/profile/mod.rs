@@ -211,7 +211,7 @@ impl IccProfile {
     /// Creates a new empty profile.
     pub fn new(device_class: ProfileClass, color_space: ColorSpace) -> Self {
         IccProfile {
-            created: time::OffsetDateTime::now(),
+            created: time::OffsetDateTime::now_utc(),
             version: 0x02100000, // default version
             device_class,
             color_space,

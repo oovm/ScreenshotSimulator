@@ -8,7 +8,10 @@ exclude = [
     "projects/.DS_Store",
 ]
 
-[workspace.dependencies]
+[workspace.dependencies.rcms]
+version = "0.1.0"
+path = "projects/rcms"
+
 
 [profile.release]
 lto = true

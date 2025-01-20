@@ -13,9 +13,7 @@ edition = "2021"
 exclude = ["package.json", "tests/**"]
 
 [dependencies]
-sqlx = { version = "0.8.2", features = ["sqlite"] }
-prost = { version = "0.13.4" }
-rcms = { version = "0.1.0" }
+rcms = { workspace = true }
 image = { version = "0.25.5" }
 
 

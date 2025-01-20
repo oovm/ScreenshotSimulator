@@ -43,14 +43,14 @@ pub fn use_custom_image() -> IOS18ScreenShot {
 }
 
 impl IOS18ScreenShot {
-    async fn read_image(&mut self, event: Event<FormData>) -> Result<(), ImageError> {
-        self.results.set(Vec::with_capacity(self.get_iteration()));
+    async fn read_image(&self, event: Event<FormData>) -> Result<(), ImageError> {
+        // self.results.set(Vec::with_capacity(self.get_iteration()));
         match event.data.files() {
             Some(files) => match files.files().first() {
                 Some(name) => {
                     let bytes = files.read_file(name).await.unwrap_or_default();
                     let any = image::load_from_memory(&bytes)?;
-                    return Ok(self.source.set(Some(any.to_rgb8())));
+                    return Ok(*self.source.borrow_mut() = any.to_rgb8());
                 }
                 None => {}
             },
@@ -60,7 +60,7 @@ impl IOS18ScreenShot {
     }
     fn convert_pixel(&self, pixel: [u8; 3]) -> [u8; 3] {
         let p3_input = cint::EncodedDisplayP3 { r: pixel[0], g: pixel[1], b: pixel[2] };
-        let srgb_out: EncodedSrgb = p3_input.into();
+        let srgb_out: EncodedSrgb = p3_input.into_cint();
         [srgb_out.r, srgb_out.g, srgb_out.b]
     }
     pub unsafe fn convert_image(&self, srgb: &RgbImage) -> RgbImage {
@@ -72,23 +72,10 @@ impl IOS18ScreenShot {
         p3_out
     }
     fn width(&self) -> usize {
-        match self.source.try_read() {
-            Ok(a) => match a.as_ref() {
-                Some(s) => s.width() as usize,
-                None => 0,
-            },
-            Err(_) => 0,
-        }
+        self.source.borrow().width() as usize
     }
     fn source_base64(&self) -> Result<String, ImageError> {
-        match self.source.try_read() {
-            Ok(a) => match a.as_ref() {
-                Some(image) => return base64_image(image),
-                None => {}
-            },
-            Err(_) => {}
-        }
-        Err(ImageError::Parameter(ParameterError::from_kind(ParameterErrorKind::NoMoreData)))
+        base64_image(&*self.source.borrow())
     }
     pub fn get_iteration(&self) -> usize {
         *self.iterations.borrow()
@@ -111,7 +98,7 @@ fn base64_image(image: &RgbImage) -> Result<String, ImageError> {
 }
 #[component]
 fn App() -> Element {
-    let mut image = use_custom_image();
+    let image = use_custom_image();
     let width = image.get_iteration();
     let source_base64 = image.source_base64().unwrap_or_default();
 
@@ -120,24 +107,27 @@ fn App() -> Element {
             input {
                 r#type: "file",
                 oninput: move |e| {
+                    let value = image.clone();
                     async move {
-                    match image.read_image(e).await {
+
+                    match value.read_image(e).await {
                         Ok(_) => info!("image loaded"),
                         Err(e) => error!("{:?}", e)
+
+                        }
                     }
-                }
                 }
             }
             span {
                 "iteration: {width}"
             }
-            input {
-                r#type: "number",
-                value: "{image.get_iteration()}",
-                oninput: move |e| {
-                    image.set_iteration(e)
-                }
-            }
+            // input {
+            //     r#type: "number",
+            //     value: "{image.get_iteration()}",
+            //     oninput: move |e| {
+            //         image.set_iteration(e)
+            //     }
+            // }
             img { src: source_base64 }
         }
     }
